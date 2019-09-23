@@ -1,0 +1,14 @@
+EPITA Assistants Intranet Downloader is a tool written in Python to download and
+clone the git repositories from the intranet of the assistants at EPITA.
+
+You need to download:
+* geckodriver (from your package manager)
+* gitpython, selenium, wget from a python package downloader.
+
+Usage:
+  ./downloader.py
+You will be asked if you want to clone your repositories or not when the tool
+adds the projects links.
+
+It came as an old utility for me and a friend, not searching for any kind of
+optimization or good quality of code.
