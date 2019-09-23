@@ -12,8 +12,7 @@ def connection():
     username = input("Username: ")
     password = getpass.getpass("Password: ")
     browser = webdriver.Firefox()
-    browser.implicitly_wait(5)
-    url = "https://cri.epita.fr/accounts/auth/login/?next=/oidc/authorize?scope=openid oidc profile email epita&state=V7xPGlGB3-9Y9iI0SLGwABmH2qxD_pjsmGFCJALknlU.sY2eNKviZ7M.acu-frontend&response_type=code&client_id=444246&redirect_uri=https://keycloak.assistants.epita.fr/auth/realms/assistants/broker/oidc-cri/endpoint&nonce=83788e40-dd27-429b-b818-6a98ce4e710b"
+    url = "https://intra.assistants.epita.fr"
     browser.get(url)
     username_form = browser.find_element_by_id("id_username")
     password_form = browser.find_element_by_id("id_password")
@@ -28,9 +27,8 @@ def get_documents(browser):
     if not os.path.isdir("documents"):
         os.mkdir("documents")
     os.chdir("documents")
-    
+
     browser.get("https://intra.assistants.epita.fr/documents")
-    time.sleep(5)
     for links in browser.find_elements_by_tag_name("a"):
         link = links.get_attribute("href")
         if link.startswith("https://ceph.assistants.epita.fr/") and not os.path.exists(wget.filename_from_url(link)):
@@ -48,7 +46,7 @@ def get_project(browser, project, to_git=False):
     if not os.path.isdir(name):
         os.mkdir(name)
     os.chdir(name)
-    
+
     browser.get(project)
     time.sleep(5)
 
