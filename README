@@ -6,7 +6,7 @@ You need to download:
 * gitpython, selenium, wget from a python package downloader.
 
 Usage:
-  ./downloader.py
+  ./epita_aid.py
 You will be asked if you want to clone your repositories or not when the tool
 adds the projects links.
 
