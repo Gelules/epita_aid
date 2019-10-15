@@ -1,3 +1,2 @@
 Download the files using the geckodriver's methods instead of using the wget
-package.
-Found another way to wait for the page to load instead of timing it.
+package. (Is it really a good idea tho?)

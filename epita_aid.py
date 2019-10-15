@@ -8,6 +8,23 @@ import time
 import getpass
 
 
+# Dirty hack
+def page_is_loaded(browser, type_of_files):
+    if type_of_files == "projects":
+        for git_links in browser.find_elements_by_tag_name("input"):
+            git_link = git_links.get_attribute("value")
+            if git_link.startswith("git@"):
+                return True
+
+    if type_of_files == "documents":
+        for links in browser.find_elements_by_tag_name("a"):
+            link = links.get_attribute("href")
+            if link.startswith("https://ceph.assistants.epita.fr/"):
+                return True
+
+    return False
+
+
 def connection():
     username = input("Username: ")
     password = getpass.getpass("Password: ")
@@ -29,6 +46,10 @@ def get_documents(browser):
     os.chdir("documents")
 
     browser.get("https://intra.assistants.epita.fr/documents")
+
+    while not page_is_loaded(browser, "documents"):
+        continue
+
     for links in browser.find_elements_by_tag_name("a"):
         link = links.get_attribute("href")
         if link.startswith("https://ceph.assistants.epita.fr/") and not os.path.exists(wget.filename_from_url(link)):
@@ -48,7 +69,8 @@ def get_project(browser, project, to_git=False):
     os.chdir(name)
 
     browser.get(project)
-    time.sleep(5)
+    while not page_is_loaded(browser, "projects"):
+        continue
 
     for links in browser.find_elements_by_tag_name("a"):
         link = links.get_attribute("href")
