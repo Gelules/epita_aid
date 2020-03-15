@@ -1,6 +1,8 @@
 #!/usr/bin/env python3
 
 from selenium import webdriver
+from selenium.webdriver.common.keys import Keys
+from selenium.webdriver.common.action_chains import ActionChains
 import wget
 import git
 import os
@@ -23,6 +25,17 @@ def page_is_loaded(browser, type_of_files):
                 return True
 
     return False
+
+
+def rows(browser):
+    while True:
+        try:
+            rows_button = browser.find_element_by_id("pagination-next")
+            res = rows_button.click()
+        except Exception as e:
+            return False
+        else:
+            return True
 
 
 def connection():
@@ -76,6 +89,11 @@ def get_project(browser, project, to_git=False):
         link = links.get_attribute("href")
         if link.startswith("https://ceph.assistants.epita.fr/") and not os.path.exists(wget.filename_from_url(link)):
             wget.download(link)
+    while rows(browser) is True:
+        for links in browser.find_elements_by_tag_name("a"):
+            link = links.get_attribute("href")
+            if link.startswith("https://ceph.assistants.epita.fr/") and not os.path.exists(wget.filename_from_url(link)):
+                wget.download(link)
 
     if to_git:
         for git_links in browser.find_elements_by_tag_name("input"):
