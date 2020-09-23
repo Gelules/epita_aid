@@ -98,10 +98,14 @@ def get_project(browser, project, to_git=False):
         for links in browser.find_elements_by_tag_name("a"):
             link = links.get_attribute("href")
             if link.startswith("https://ceph.assistants.epita.fr/") and not os.path.exists(wget.filename_from_url(link)):
+<<<<<<< HEAD
                 if link.count('.') == 8:
                     os.system(f"wget '{link}'")
                 else:
                     wget.download(link)
+=======
+                wget.download(link)
+>>>>>>> fa68064624fe9c26d53e891bb7ca9a658cfc1dfe
 
     if to_git:
         for git_links in browser.find_elements_by_tag_name("input"):
