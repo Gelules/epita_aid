@@ -1,6 +1,8 @@
 #!/usr/bin/env python3
 
 from selenium import webdriver
+from selenium.webdriver.common.keys import Keys
+from selenium.webdriver.common.action_chains import ActionChains
 import wget
 import git
 import os
@@ -25,17 +27,33 @@ def page_is_loaded(browser, type_of_files):
     return False
 
 
+def rows(browser):
+    while True:
+        try:
+            rows_button = browser.find_element_by_id("pagination-next")
+            res = rows_button.click()
+        except Exception as e:
+            return False
+        else:
+            return True
+
+
 def connection():
     username = input("Username: ")
     password = getpass.getpass("Password: ")
     browser = webdriver.Firefox()
     url = "https://intra.assistants.epita.fr"
     browser.get(url)
-    username_form = browser.find_element_by_id("id_username")
+    username_form = None
+    while username_form is None:
+        try:
+            username_form = browser.find_element_by_id("id_username")
+        except Exception as e:
+            pass
     password_form = browser.find_element_by_id("id_password")
     username_form.send_keys(username)
     password_form.send_keys(password)
-    submit_button = browser.find_element_by_class_name("mdl-button")
+    submit_button = browser.find_element_by_class_name("mt-4")
     submit_button.click()
     return browser
 
@@ -76,6 +94,14 @@ def get_project(browser, project, to_git=False):
         link = links.get_attribute("href")
         if link.startswith("https://ceph.assistants.epita.fr/") and not os.path.exists(wget.filename_from_url(link)):
             wget.download(link)
+    while rows(browser) is True:
+        for links in browser.find_elements_by_tag_name("a"):
+            link = links.get_attribute("href")
+            if link.startswith("https://ceph.assistants.epita.fr/") and not os.path.exists(wget.filename_from_url(link)):
+                if link.count('.') == 8:
+                    os.system(f"wget '{link}'")
+                else:
+                    wget.download(link)
 
     if to_git:
         for git_links in browser.find_elements_by_tag_name("input"):
